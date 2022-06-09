@@ -2,8 +2,9 @@ const { gql } = require("apollo-server");
 
 exports.typeDefs = gql`
   type Query {
-    Tweet(id: ID!): Tweet
-    Tweets(limit: Int): [Tweet]
+    tweets(filter: tweetsFilter): [Tweet]
+    tweet(id: ID!): Tweet
+    user(id: ID!): User
   }
 
   type Mutation {
@@ -16,7 +17,7 @@ exports.typeDefs = gql`
     id: ID!
     body: String
     date: String
-    Author: User
+    user: User
     Stats: Stat
   }
 
@@ -26,11 +27,16 @@ exports.typeDefs = gql`
     first_name: String
     last_name: String
     avatar_url: String
+    tweets: [Tweet]
   }
 
   type Stat {
     views: Int
     likes: Int
     retweets: Int
+  }
+
+  input tweetsFilter {
+    limit: Int
   }
 `;

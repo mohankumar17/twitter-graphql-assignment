@@ -1,62 +1,36 @@
 exports.Query = {
-  products: (parent, { filter }, { db }) => {
-    if (filter) {
-      let onSaleProds = db.productsList;
-      if (filter.onSale) {
-        onSaleProds = onSaleProds.filter((eachProd) => {
-          return eachProd.onSale === true;
-        });
-      }
-
-      let onSaleHighRatedProds = [];
-
-      onSaleProds.forEach((eachProd) => {
-        let prodsReviews = db.reviewsList.filter((eachReview) => {
-          return eachReview.productId === eachProd.id;
-        });
-
-        let sum = 0;
-        let tot = 0;
-
-        prodsReviews.forEach((eachReview) => {
-          tot += 1;
-          sum += eachReview.rating;
-        });
-
-        let avgRating = sum / tot;
-
-        //console.log(eachProd.name + " average rating: " + avgRating);
-        if (avgRating >= filter.avgRating) {
-          onSaleHighRatedProds.push(eachProd);
-        }
-      });
-      return onSaleHighRatedProds;
-    } else {
-      return db.productsList;
-    }
-  },
-  product: (parent, args, { db }) => {
+  user: (parent, args, { db }) => {
     let id = args.id;
 
-    let resProd = db.productsList.find((eachProduct) => {
-      return eachProduct.id === id;
+    let resUser = db.usersList.find((eachUser) => {
+      return eachUser.id === id;
     });
 
-    return resProd ? resProd : null;
+    return resUser ? resUser : null;
   },
-  categories: (parent, args, { db }) => {
-    return db.categoriesList;
-  },
-  category: (parent, args, { db }) => {
-    let { id } = args;
 
-    let resCat = db.categoriesList.find((eachCategory) => {
-      return eachCategory.id === id;
+  tweet: (parent, args, { db }) => {
+    let id = args.id;
+
+    let resTweet = db.tweetsList.find((eachTweet) => {
+      return eachTweet.id === id;
     });
 
-    return resCat ? resCat : null;
+    return resTweet ? resTweet : null;
   },
-  reviews: (parent, args, { db }) => {
-    return db.reviewsList;
+  tweets: (parent, { filter }, { db }) => {
+    if (filter) {
+      let limit = filter.limit;
+      let resTweets = [];
+      let i = 0;
+      while (limit > 0) {
+        resTweets.push(db.tweetsList[i]);
+        i++;
+        limit--;
+      }
+      return resTweets;
+    } else {
+      return db.tweetsList;
+    }
   },
 };
